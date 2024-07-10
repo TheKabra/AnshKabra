@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ansh Kabra's Chess Journey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            overflow-x: hidden;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #ffdd59;
+            border-bottom: 3px solid #ffa502;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .brand-name {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.5em;
+            color: #333;
+        }
+        nav {
+            text-align: center;
+            padding: 10px;
+            background-color: #ffeaa7;
+            border-bottom: 3px solid #ff7f50;
+        }
+        nav button {
+            padding: 15px 30px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            background-color: #ff6b81;
+            border: none;
+            border-radius: 25px;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        nav button:hover {
+            background-color: #ff4757;
+            transform: scale(1.1);
+        }
+        main {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        article {
+            background-color: #fff;
+            padding: 30px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            width: 100%;
+        }
+        .section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .section.active {
+            display: block;
+            opacity: 1;
+        }
+        .login-container, .otp-container, .profile-container, .forgot-password-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin: auto;
+        }
+        .login-container input[type="text"], .login-container input[type="email"], .login-container input[type="password"], .profile-container input[type="text"], .profile-container input[type="email"], .forgot-password-container input[type="email"], .forgot-password-container input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .login-container input[type="submit"], .otp-container input[type="submit"], .profile-container input[type="submit"], .forgot-password-container input[type="submit"] {
+            width: 100%;
+            background-color: #ff6b81;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .login-container input[type="submit"]:hover, .otp-container input[type="submit"]:hover, .profile-container input[type="submit"]:hover, .forgot-password-container input[type="submit"]:hover {
+            background-color: #ff4757;
+        }
+        .login-container .signup-link, .otp-container .resend-link, .profile-container .change-email-link, .forgot-password-container .login-link {
+            margin-top: 20px;
+            color: #ff6b81;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .otp-container {
+            display: flex;
+            justify-content: center;
+        }
+        .otp-input {
+            width: 50px;
+            margin: 0 5px;
+            text-align: center;
+            font-size: 24px;
+            border: 2px solid #ff6b81;
+            border-radius: 10px;
+            transition: border-color 0.3s ease;
+        }
+        .otp-input:focus {
+            border-color: #ff4757;
+            outline: none;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        footer a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        .social-icons {
+            margin-top: 10px;
+        }
+        .social-icons a {
+            color: white;
+            margin: 0 10px;
+            font-size: 20px;
+        }
+        .button {
+            background-color: white;
+            color: black;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 10px;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        (function() {
+            emailjs.init("cJ6NxnsnTp1S-ra0a");
+        })();
+
+        function sendVerificationEmail(email, otpCode) {
+            emailjs.send("service_pxda8tk", "template_cisayw2", {
+                to_email: email,
+                from_name: "Ansh Kabra",
+                to_name: email,
+                otp: otpCode
+            }).then(function(response) {
+                alert('Email sent successfully!');
+            }, function(error) {
+                alert('Failed to send email. Please check the console for errors.');
+                console.error('FAILED...', error);
+            });
+        }
+
+        function containsSwearWords(username) {
+            const swearWords = [
+                "arse", "arsehead", "arsehole", "ass", "ass hole", "asshole", "bastard", "bitch", "bloody", "bollocks", 
+                "brotherfucker", "bugger", "bullshit", "child-fucker", "Christ on a bike", "Christ on a cracker", "cock", 
+                "cocksucker", "crap", "cunt", "damn", "damned", "damnit", "dick", "dickhead", "dumb ass", "dumb-ass", 
+                "dyke", "father-fucker", "frigger", "fuck", "fucker", "fucking", "god dammit", "god damn", "goddamn", 
+                "hell", "holy shit", "horseshit", "Jesus fuck", "Jesus H. Christ", "Jesus Harold Christ", "Jesus, Mary and Joseph", 
+                "kike", "motherfucker", "nigga", "nigra", "pigfucker", "piss", "prick", "pussy", "shit", "shit ass", "shite", 
+                "sibling fucker", "sisterfucker", "slut", "son of a whore", "son of a bitch", "spastic", "sweet Jesus", 
+                "twat", "wanker"
+            ];
+            for (let word of swearWords) {
+                if (username.toLowerCase().includes(word)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function validatePassword(password) {
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            return passwordRegex.test(password);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            autoLogin();
+
+            document.getElementById('signupForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const username = document.getElementById('signupUsername').value;
+                const email = document.getElementById('signupEmail').value;
+                const password = document.getElementById('signupPassword').value;
+                const confirmPassword = document.getElementById('signupConfirmPassword').value;
+
+                if (containsSwearWords(username)) {
+                    alert('Username contains inappropriate words');
+                    return;
+                }
+
+                if (!validatePassword(password)) {
+                    alert('Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match');
+                    return;
+                }
+
+                const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+                localStorage.setItem('otpCode', otpCode);
+                localStorage.setItem('email', email);
+                localStorage.setItem('username', username);
+                localStorage.setItem('password', password);
+                sendVerificationEmail(email, otpCode);
+                showSection('otp');
+            });
+
+            document.getElementById('loginForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                const storedEmail = localStorage.getItem('email');
+                const storedPassword = localStorage.getItem('password');
+                const storedUsername = localStorage.getItem('username');
+
+                if (email !== storedEmail || password !== storedPassword) {
+                    alert('Incorrect email or password');
+                    return;
+                }
+
+                if (localStorage.getItem('device') !== navigator.userAgent) {
+                    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+                    localStorage.setItem('otpCode', otpCode);
+                    sendVerificationEmail(email, otpCode);
+                    showSection('otp');
+                } else {
+                    displayWelcomeMessage(storedUsername);
+                    showSection('home');
+                }
+            });
+
+            document.getElementById('validateOtpButton').addEventListener('click', function() {
+                const otpInputs = document.querySelectorAll('.otp-input');
+                let otpCode = '';
+                otpInputs.forEach(input => {
+                    otpCode += input.value;
+                });
+
+                const storedOtpCode = localStorage.getItem('otpCode');
+                if (otpCode === storedOtpCode) {
+                    const storedUsername = localStorage.getItem('username');
+                    const newEmail = localStorage.getItem('newEmail');
+                    if (newEmail) {
+                        localStorage.setItem('email', newEmail);
+                        localStorage.removeItem('newEmail');
+                    }
+                    displayWelcomeMessage(storedUsername);
+                    localStorage.setItem('device', navigator.userAgent);
+                    showSection('home');
+                } else {
+                    alert('Invalid OTP. Please try again.');
+                }
+            });
+
+            document.getElementById('resendOtpButton').addEventListener('click', function() {
+                const email = localStorage.getItem('newEmail') || localStorage.getItem('email');
+                const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+                localStorage.setItem('otpCode', otpCode);
+                sendVerificationEmail(email, otpCode);
+            });
+
+            document.getElementById('forgotPasswordForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const email = document.getElementById('forgotEmail').value;
+                const storedEmail = localStorage.getItem('email');
+
+                if (email !== storedEmail) {
+                    alert('Email not found');
+                    return;
+                }
+
+                const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+                localStorage.setItem('otpCode', otpCode);
+                sendVerificationEmail(email, otpCode);
+                showSection('otp');
+            });
+
+            document.getElementById('profileForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const newEmail = document.getElementById('profileEmail').value;
+                const username = document.getElementById('profileName').value;
+                const storedEmail = localStorage.getItem('email');
+
+                if (newEmail !== storedEmail) {
+                    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+                    localStorage.setItem('otpCode', otpCode);
+                    sendVerificationEmail(newEmail, otpCode);
+                    localStorage.setItem('newEmail', newEmail);
+                } else {
+                    localStorage.setItem('username', username);
+                    displayWelcomeMessage(username);
+                    alert('Profile updated successfully');
+                    showSection('home');
+                }
+            });
+
+            document.querySelector('.change-email-link').addEventListener('click', function() {
+                const storedUsername = localStorage.getItem('username');
+                document.getElementById('profileName').value = storedUsername;
+                showSection('profile');
+            });
+
+            document.querySelector('.login-link').addEventListener('click', function() {
+                showSection('login');
+            });
+        });
+
+        function autoLogin() {
+            const email = localStorage.getItem('email');
+            const username = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            const device = localStorage.getItem('device');
+
+            if (email && username && password && device === navigator.userAgent) {
+                displayWelcomeMessage(username);
+                showSection('home');
+            }
+        }
+
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function displayWelcomeMessage(username) {
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            welcomeMessage.innerHTML = `
+                <div class="welcome-box" onclick="viewProfile()">
+                    Welcome, ${username}
+                    <i class="fas fa-user-circle" style="margin-left: 10px;"></i>
+                </div>
+                <button onclick="logout()">Logout</button>
+            `;
+            hideAuthButtons();
+        }
+
+        function hideAuthButtons() {
+            const buttonsToRemove = ['signup', 'login'];
+            buttonsToRemove.forEach(id => {
+                const button = document.querySelector(`button[onclick="showSection('${id}')"]`);
+                if (button) button.style.display = 'none';
+            });
+        }
+
+        function viewProfile() {
+            const storedUsername = localStorage.getItem('username');
+            const storedEmail = localStorage.getItem('email');
+            document.getElementById('profileName').value = storedUsername;
+            document.getElementById('profileEmail').value = storedEmail;
+            showSection('profile');
+        }
+
+        function logout() {
+            localStorage.removeItem('email');
+            localStorage.removeItem('username');
+            localStorage.removeItem('password');
+            localStorage.removeItem('otpCode');
+            localStorage.removeItem('device');
+            showSection('login');
+            showAuthButtons();
+        }
+
+        function showAuthButtons() {
+            const buttonsToShow = ['signup', 'login'];
+            buttonsToShow.forEach(id => {
+                const button = document.querySelector(`button[onclick="showSection('${id}')"]`);
+                if (button) button.style.display = 'inline-block';
+            });
+        }
+
+        let hasShownPopup = false;
+
+        document.addEventListener('mouseleave', (event) => {
+            if (!hasShownPopup && event.clientY <= 0) {
+                document.querySelector('.overlay').style.display = 'block';
+                document.querySelector('.popup').style.display = 'block';
+                hasShownPopup = true;
+                setTimeout(() => {
+                    document.querySelector('.overlay').style.display = 'none';
+                    document.querySelector('.popup').style.display = 'none';
+                }, 1500);
+            }
+        });
+
+        document.addEventListener('mouseenter', () => {
+            if (hasShownPopup) {
+                document.querySelector('.overlay').style.display = 'none';
+                document.querySelector('.popup').style.display = 'none';
+                hasShownPopup = false;
+            }
+        });
+    </script>
+    <!-- Elfsight Platform Script -->
+    <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
+</head>
+<body>
+    <header>
+        <div class="brand-name">Ansh Kabra</div>
+        <h1>Welcome to My Chess Journey</h1>
+        <p id="welcomeMessage"></p>
+    </header>
+    <nav>
+        <button onclick="showSection('bullet')">Bullet Rating</button>
+        <button onclick="showSection('blitz')">Blitz Rating</button>
+        <button onclick="showSection('rapid')">Rapid</button>
+        <button onclick="showSection('leaderboard')">Leaderboard</button>
+        <button onclick="showSection('login')">Login</button>
+        <button onclick="showSection('signup')">Sign Up</button>
+        <button onclick="showSection('donations')">Donations</button>
+    </nav>
+    <main>
+        <article>
+            <div id="bullet" class="section active">
+                <h2>Bullet Rating</h2>
+                <p>Here are my best Bullet games:</p>
+                <a href="https://www.chess.com/games/archive/anshkabra2012?gameType=live&gameTypeslive%5B%5D=bullet" target="_blank">Best Bullet games of Ansh Kabra</a>
+            </div>
+            <div id="blitz" class="section">
+                <h2>Blitz Rating</h2>
+                <p>Here is the link to my chess.com account games:</p>
+                <a href="https://www.chess.com/games/archive/anshkabra2012?gameType=live&gameTypeslive%5B%5D=blitz" target="_blank">Best chess games of Ansh Kabra</a>
+            </div>
+            <div id="rapid" class="section">
+                <h2>Rapid</h2>
+                <p>I don't really play rapid anymore. Date of writing 30/06/2023</p>
+            </div>
+            <div id="leaderboard" class="section">
+                <h2>Leaderboard</h2>
+                <p>Here is the link to the chess leaderboard:</p>
+                <a href="https://www.chess.com/leaderboard/live" target="_blank">Chess Leaderboard</a>
+            </div>
+            <div id="login" class="section">
+                <h2>Login</h2>
+                <div class="login-container">
+                    <form id="loginForm">
+                        <input type="email" id="loginEmail" placeholder="Email" required>
+                        <input type="password" id="loginPassword" placeholder="Password" required>
+                        <input type="submit" value="Login">
+                        <a href="#" class="forgot-password-link" onclick="showSection('forgotPassword')">Forgot Password?</a>
+                    </form>
+                </div>
+            </div>
+            <div id="signup" class="section">
+                <h2>Sign Up</h2>
+                <div class="login-container">
+                    <form id="signupForm">
+                        <input type="text" id="signupUsername" placeholder="Name" required>
+                        <input type="email" id="signupEmail" placeholder="Email" required>
+                        <input type="password" id="signupPassword" placeholder="Password" required>
+                        <input type="password" id="signupConfirmPassword" placeholder="Confirm Password" required>
+                        <input type="submit" value="Sign Up">
+                    </form>
+                </div>
+            </div>
+            <div id="otp" class="section">
+                <h2>Verification Code</h2>
+                <p>Please type the verification code sent to your email:</p>
+                <div class="otp-container">
+                    <input type="text" class="otp-input" maxlength="1">
+                    <input type="text" class="otp-input" maxlength="1">
+                    <input type="text" class="otp-input" maxlength="1">
+                    <input type="text" class="otp-input" maxlength="1">
+                    <input type="text" class="otp-input" maxlength="1">
+                    <input type="text" class="otp-input" maxlength="1">
+                    <input type="button" id="validateOtpButton" value="Validate OTP">
+                    <a href="#" class="resend-link" id="resendOtpButton">Resend OTP</a>
+                </div>
+            </div>
+            <div id="profile" class="section">
+                <h2>Your Profile</h2>
+                <div class="profile-container">
+                    <form id="profileForm">
+                        <label>Name:</label>
+                        <input type="text" id="profileName" readonly>
+                        <label>Email:</label>
+                        <input type="email" id="profileEmail" required>
+                        <input type="submit" value="Update Email">
+                    </form>
+                </div>
+            </div>
+            <div id="forgotPassword" class="section">
+                <h2>Forgot Password</h2>
+                <div class="forgot-password-container">
+                    <form id="forgotPasswordForm">
+                        <input type="email" id="forgotEmail" placeholder="Email" required>
+                        <input type="submit" value="Reset Password">
+                        <a href="#" class="login-link">Back to Login</a>
+                    </form>
+                </div>
+            </div>
+            <div id="donations" class="section">
+                <h2>Donate</h2>
+                <!-- PayPal Button Widget -->
+                <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
+                <div class="elfsight-app-2ca620bf-3a77-42d6-8cc6-9f6351e305da" data-elfsight-app-lazy></div>
+            </div>
+        </article>
+    </main>
+    <footer>
+        <p>&copy; 2024 Ansh Kabra. All rights reserved.</p>
+        <div class="social-icons">
+            <a href="https://x.com/AnshKabra2012" target="_blank"><i class="fab fa-twitter"></i></a>
+        </div>
+    </footer>
+</body>
+</html>
